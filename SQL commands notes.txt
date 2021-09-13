@@ -1,0 +1,40 @@
+SELECT Title, ReleaseYear, Locations FROM FilmLocations WHERE ReleaseYear<=2000;
+SELECT <column1>, <column2>, <column3> FROM <table name> WHERE <column> <=2000;
+
+COUNT and DISTINCT
+SELECT COUNT(DISTINCT <column1>) FROM <table name> WHERE <column2>="Clint Eastwood";
+SELECT COUNT(DISTINCT Distributor) FROM FilmLocations WHERE Actor1="Clint Eastwood";
+
+LIMIT and OFFSET
+SELECT DISTINCT <column1> FROM <table name> WHERE <column2> =2015 LIMIT 3 OFFSET 5;
+SELECT DISTINCT Title FROM FilmLocations WHERE ReleaseYear=2015 LIMIT 3 OFFSET 5;
+
+INSERT
+INSERT INTO <table name> (<column1>, <column2>, <column3>) VALUES(<value>, <value>, <value>), (<value>, <value>, <value>);
+INSERT INTO Instructor(ins_id, lastname, firstname) VALUES(8, 'Ryan', 'Steve'), (9, 'Sannareddy', 'Ramesh');
+
+UPDATE
+UPDATE <table name> SET <column1>=<value>, <column2>=<value> WHERE <column3>=5;
+UPDATE Instructor SET city='Dubai', country='AE' WHERE ins_id=5;
+
+DELETE
+DELETE FROM <table name> WHERE <column1> = <value>;
+DELETE FROM instructor WHERE firstname = 'Hima';
+
+WHERE and BETWEEN
+SELECT * FROM employees WHERE (salary BETWEEN 60000 AND 70000) AND dep_id = 5;
+
+WHERE and LIKE
+SELECT f_name, l_name FROM employees WHERE b_date LIKE '197%';
+SELECT f_name, l_name FROM employees WHERE address LIKE '%Elgin,IL%';
+
+ORDER BY DESC
+SELECT F_NAME, L_NAME, DEP_ID FROM EMPLOYEES ORDER BY DEP_ID DESC, L_NAME DESC;
+
+GROUP BY
+SELECT DEP_ID, COUNT(*) FROM EMPLOYEES GROUP BY DEP_ID;
+
+SELECT DEP_ID, COUNT(*) AS "NUM_EMPLOYEES", AVG(SALARY) AS "AVG_SALARY"
+FROM EMPLOYEES
+GROUP BY DEP_ID
+ORDER BY AVG_SALARY;

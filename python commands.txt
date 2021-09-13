@@ -1,0 +1,59 @@
+###Pandas DataFrame processing commands###
+
+Pandas DataFrame read_csv
+df = pd.read_csv(url, header = None)		#read a .csv file from URL which doesn't have any headers
+headers = ['time', 'date', 'price']		#headers variable containing values to be assigned to column headers
+df = pd.read_csv(url, names = headers)		#read a .csv file from URL and assign values in headers as column names
+
+df.describe(include='all')			#provide full summary statistics for all rows and columns (excludes object types)
+df.describe(include=['object'])			#summary statistics of object types
+
+df.dropna(subset=['column_name'], axis=0, inplace = True)	#drop missing values (axis=0 to drop row, axis=1 to drop column). inplace = True applies to DataFrame directly
+df = df.dropna(subset=['column_name'], axis=0)			#same as the above command without using the inplace = true argument
+df.reset_index(drop=True, inplace=True)				#drop current index and replace with a new default index (0, 1, 2, etc.)
+
+df.replace('?', np.nan, inplace=True)		#replace '?' with NaN
+mean = df['column_name'].mean()			#calculate mean value in that column
+df['column_name'].replace(np.nan, mean)		#replace NaN values with the mean value in that column
+
+df['mgp'] = 235/df[mpg]					#change values in a column from miles per galon to litres per 100km
+df.rename(columns={'mgp':'L/100km'}, inplace=True)	#rename the column
+
+df.dtypes							#identify data type
+avg_price = df['price'].astype('float').mean(axis=0)		#convert data type to float for the column 'price' and calculate the mean
+df['price'].replace(np.nan, avg_price, inplace=True)		#replace NaN values with avg_price
+
+#Binning
+bins=np.linspace(min(df['price']), max(df['price']), 4)						#binning - create 3 equally sized/spaced bins within range of min and max values
+group_names=['Low', 'Medium', 'High']								#assign names to 3 bins
+df['price-binned'] = pd.cut(df['price'], bins, labels=group_names, include_lowest=True)		#create new column, cut/segment the data values to bins
+pyplot.bar(group_names, df["price-binned"].value_counts())					#plot bar graph with distribution of each bin
+plt.pyplot.hist(df["price-binned"], bins = 3)		###ALTERNATIVELY plot histogram instead
+
+missing_data = df.isnull()				#identify missing data with boolean output for values
+for column in missing_data.columns.values.tolist():	#for loop - create list of values in each column then find out the number of missing values (True) in each column
+    print(column)
+    print(missing_data['column'].value_counts())
+    print("")
+
+most_common = df['column_name'].value_counts().idxmax()		#calculate the most common value
+df['column_name'].replace(np.nan, most_common, inplace=True)	#replace NaN values with the most_common value
+
+#Data normalisation
+df['height'] = df['height']/df['height'].max()		#replace original value by original value/maximum value. New value is range 0-1 (normalised)
+df['length'] = df['length']/df['length'].max()
+
+#Indicator variable (dummy variable)
+dummy_variable_1 = pd.get_dummies(df["fuel-type"])
+dummy_variable_1.rename(columns={'gas':'fuel-type-gas', 'diesel':'fuel-type-diesel'}, inplace=True)	#give boolean values to replace original values
+df = pd.concat([df, dummy_variable_1], axis=1)		#merge original dataframe 'df' and dummy_variable_1. add the columns to the end of df
+df.drop("fuel-type", axis = 1, inplace=True)		#drop original column 'fuel-type' from df
+
+#Series to DataFrame
+df['column_name'].value_counts().to_frame()		#convert Series to DataFrame (to_frame()) and calculate how many units of each variable there are (value_counts)
+
+#groupby and create pivot table
+df[['column_name_1','column_name_2','price']]						#select 3 columns
+df_grptest = df.groupby(['column_name_1','column_name_2], as_index=False).mean()	#group 2 columns, make index default (0, 1, 2..), find average
+grouped_pivot = df_grptest.pivot(index='column_name_1',columns='column_name_2')		#create pivot table, column_name_1 as rows, column_name_2 as columns
+
